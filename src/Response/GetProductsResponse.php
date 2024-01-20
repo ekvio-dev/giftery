@@ -8,7 +8,7 @@ namespace App\Response;
 class GetProductsResponse extends ApiResponse
 {
     /**
-     * @var array<string,mixed>
+     * @var array<int,Product>
      */
     private array $products = [];
     public function __construct(array $data)
