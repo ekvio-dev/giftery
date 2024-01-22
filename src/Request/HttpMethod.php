@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 
-namespace App\Request;
+namespace Giftery\Request;
 
 
 enum HttpMethod: string

@@ -3,18 +3,18 @@
 declare(strict_types=1);
 
 
-namespace App;
+namespace Giftery;
 
 
-use App\Exception\HttpException;
-use App\Request\Command;
-use App\Request\HttpMethod;
-use App\Request\Order;
-use App\Response\GetBalanceResponse;
-use App\Response\GetTestResponse;
-use App\Response\MakeOrderResponse;
-use App\Response\GetProductsResponse;
-use App\Response\GetStatusResponse;
+use Giftery\Exception\HttpException;
+use Giftery\Request\Command;
+use Giftery\Request\HttpMethod;
+use Giftery\Request\Order;
+use Giftery\Response\GetBalanceResponse;
+use Giftery\Response\GetTestResponse;
+use Giftery\Response\MakeOrderResponse;
+use Giftery\Response\GetProductsResponse;
+use Giftery\Response\GetStatusResponse;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\ResponseInterface;

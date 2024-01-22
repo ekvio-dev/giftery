@@ -3,9 +3,9 @@
 declare(strict_types=1);
 
 
-namespace App\Response;
+namespace Giftery\Response;
 
-use App\Exception\ChangeApiException;
+use Giftery\Exception\ChangeApiException;
 
 class GetBalanceResponse extends ApiResponse
 {

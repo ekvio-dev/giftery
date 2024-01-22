@@ -3,14 +3,13 @@
 declare(strict_types=1);
 
 
-namespace App\Request;
+namespace Giftery\Request;
 
 
-use DomainException;
 use InvalidArgumentException;
-use JsonSerializable as JsonSerializableAlias;
+use JsonSerializable;
 
-final class Order implements JsonSerializableAlias
+final class Order implements JsonSerializable
 {
     private string $uuid;
     private int $productId;

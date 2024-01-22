@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Request;
+namespace Giftery\Request;
 
 enum Command: string
 {

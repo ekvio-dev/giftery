@@ -3,11 +3,11 @@
 declare(strict_types=1);
 
 
-namespace App\Response;
+namespace Giftery\Response;
 
 
-use App\Exception\ChangeApiException;
-use App\Exception\GifteryApiException;
+use Giftery\Exception\ChangeApiException;
+use Giftery\Exception\GifteryApiException;
 
 abstract class ApiResponse
 {

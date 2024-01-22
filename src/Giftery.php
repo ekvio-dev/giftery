@@ -3,15 +3,15 @@
 declare(strict_types=1);
 
 
-namespace App;
+namespace Giftery;
 
 
-use App\Request\Order;
-use App\Response\GetBalanceResponse;
-use App\Response\GetTestResponse;
-use App\Response\MakeOrderResponse;
-use App\Response\GetProductsResponse;
-use App\Response\GetStatusResponse;
+use Giftery\Request\Order;
+use Giftery\Response\GetBalanceResponse;
+use Giftery\Response\GetTestResponse;
+use Giftery\Response\MakeOrderResponse;
+use Giftery\Response\GetProductsResponse;
+use Giftery\Response\GetStatusResponse;
 
 interface Giftery
 {

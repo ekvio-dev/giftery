@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 
-namespace App;
+namespace Giftery;
 
 
 class JsonEncoder implements Encoder
