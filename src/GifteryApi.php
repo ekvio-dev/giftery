@@ -6,7 +6,6 @@ declare(strict_types=1);
 namespace Giftery;
 
 
-use Giftery\Exception\HttpException;
 use Giftery\Request\Command;
 use Giftery\Request\HttpMethod;
 use Giftery\Request\Order;
@@ -15,20 +14,15 @@ use Giftery\Response\GetTestResponse;
 use Giftery\Response\MakeOrderResponse;
 use Giftery\Response\GetProductsResponse;
 use Giftery\Response\GetStatusResponse;
-use Psr\Http\Client\ClientInterface;
-use Psr\Http\Message\RequestFactoryInterface;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\StreamFactoryInterface;
 
-class GifteryPsrApi implements Giftery
+class GifteryApi implements Giftery
 {
-    private RequestFactoryInterface&StreamFactoryInterface $httpFactory;
-    private ClientInterface $client;
+    private HttpClient $httpClient;
     private Encoder $encoder;
     private int $clientId;
     private string $clientSecret;
 
-    private string $host = 'https://ssl-api.giftery.ru/?';
+    private string $host = 'https://ab-ssl-api.giftery.ru/?';
 
     /**
      * @var array<string,string>
@@ -36,13 +30,12 @@ class GifteryPsrApi implements Giftery
     private array $options = [];
 
     /**
-     * @param RequestFactoryInterface&StreamFactoryInterface $httpFactory
-     * @param ClientInterface $client
+     * @param HttpClient $httpClient
      * @param int $clientId
      * @param string $clientSecret
      * @param array<string,string> $options
      */
-    public function __construct(RequestFactoryInterface&StreamFactoryInterface $httpFactory, ClientInterface $client, int $clientId, string $clientSecret, array $options = [])
+    public function __construct(HttpClient $httpClient, int $clientId, string $clientSecret, array $options = [])
     {
         if ($clientId <= 0) {
             throw new \InvalidArgumentException('Invalid Client ID');
@@ -60,8 +53,7 @@ class GifteryPsrApi implements Giftery
             $this->host = $options['host'];
         }
 
-        $this->httpFactory = $httpFactory;
-        $this->client = $client;
+        $this->httpClient = $httpClient;
         $this->encoder = new JsonEncoder();
 
         $this->options += $options;
@@ -98,24 +90,15 @@ class GifteryPsrApi implements Giftery
 
     /**
      * @return array<string,mixed>
-     * @throws HttpException
-     * @throws \Psr\Http\Client\ClientExceptionInterface
      */
     private function request(HttpMethod $method, Command $command, string $data = ''): array
     {
-        $request = $this->httpFactory->createRequest($method->value, $this->buildUri($method, $command, $data));
+        $uri = $this->buildUri($method, $command, $data);
+        $headers = $method->isPost() ? ['Content-Type' => 'application/x-www-form-urlencoded'] : [];
+        $body = $method->isPost() ? $this->buildBody($command, $data) : '';
 
-        if ($method->isPost()) {
-            $request = $request->withHeader('Content-Type', 'application/x-www-form-urlencoded');
-            $request = $request->withBody(
-                $this->httpFactory->createStream($this->buildBody($command, $data))
-            );
-        }
-
-        $response = $this->client->sendRequest($request);
-        $this->guardResponse($response);
-
-        return $this->encoder->decode((string) $response->getBody());
+        $response = $this->httpClient->request($method, $command, $uri, $headers, $body);
+        return $this->encoder->decode($response);
     }
 
     private function buildUri(HttpMethod $method, Command $command, string $data = ''): string
@@ -137,17 +120,14 @@ class GifteryPsrApi implements Giftery
 
     private function buildBody(Command $command, string $data): string
     {
+        if (empty($data)) {
+            return '';
+        }
+
         return http_build_query([
             'data' => $data,
             'sig' => $this->createSign($command, $data)
         ]);
-    }
-
-    private function guardResponse(ResponseInterface $response): void
-    {
-        if ($response->getStatusCode() >= 400) {
-            throw new HttpException($response->getStatusCode(), $response->getReasonPhrase());
-        }
     }
 
     private function createSign(Command $command, string $data): string
