@@ -22,7 +22,7 @@ class GifteryApi implements Giftery
     private int $clientId;
     private string $clientSecret;
 
-    private string $host = 'https://ab-ssl-api.giftery.ru/?';
+    private string $host = 'https://ssl-api.giftery.ru/?';
 
     /**
      * @var array<string,string>
