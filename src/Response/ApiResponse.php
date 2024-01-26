@@ -36,7 +36,7 @@ abstract class ApiResponse
 
         if ($status === self::STATUS_ERROR) {
             throw new GifteryApiException(
-                $data['error']['code'] ?? self::UNKNOWN_ERROR_CODE, $data['error']['code'] ?? self::UNKNOWN_ERROR_TEXT, $data);
+                $data['error']['code'] ?? self::UNKNOWN_ERROR_CODE, $data['error']['text'] ?? self::UNKNOWN_ERROR_TEXT, $data);
         }
 
         if ($status === self::STATUS_OK) {
