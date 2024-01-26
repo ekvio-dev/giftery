@@ -18,7 +18,7 @@ class GetStatusResponse extends ApiResponse
     private int $face;
     private ?int $balance;
     private ?int $sum;
-    private string $expireDate;
+    private ?string $expireDate;
     private string $code;
     private string $comment;
     private ?string $externalId;
@@ -89,7 +89,7 @@ class GetStatusResponse extends ApiResponse
         return $this->sum;
     }
 
-    public function expireDate(): string
+    public function expireDate(): ?string
     {
         return $this->expireDate;
     }
