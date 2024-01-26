@@ -45,6 +45,7 @@ class CurlClient implements HttpClient
 
         $response = (string) curl_exec($this->curlHandle);
         $this->guardResponse($response);
+        curl_reset($this->curlHandle); //reset default options
 
         return $response;
     }
