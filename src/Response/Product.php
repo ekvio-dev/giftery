@@ -5,12 +5,8 @@ declare(strict_types=1);
 
 namespace Giftery\Response;
 
-use Giftery\Exception\ChangeApiException;
 
-/**
- * @see https://docs.giftery.tech/b2b-api/methods/getProducts/
- */
-class Product
+final class Product
 {
     private int $id;
 

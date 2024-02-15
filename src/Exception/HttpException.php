@@ -14,7 +14,7 @@ class HttpException extends Exception
     private string $httpPhrase;
     public function __construct(int $code, string $phrase)
     {
-        parent::__construct('Http exception');
+        parent::__construct(sprintf('Error %s: %s', $code, $phrase));
         $this->httpCode = $code;
         $this->httpPhrase = $phrase;
     }

@@ -5,6 +5,9 @@ declare(strict_types=1);
 
 namespace Giftery\Response;
 
+/**
+ * @see https://docs.giftery.tech/b2b-api/methods/getProducts/
+ */
 class GetProductsResponse extends ApiResponse
 {
     /**

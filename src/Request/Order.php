@@ -172,7 +172,7 @@ final class Order implements JsonSerializable
             throw new InvalidArgumentException('Too long code value');
         }
 
-        if (preg_match('/^[_A-Z0-9]+$/', $code) === false) {
+        if (!preg_match('/^[_A-Z0-9]+$/', $code)) {
             throw new InvalidArgumentException('Code contains invalid symbols. Use pattern: ^[_A-Z0-9]+$');
         }
 

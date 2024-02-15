@@ -24,7 +24,7 @@ class GifteryApiException extends Exception
      */
     public function __construct(int $code, string $message, array $response)
     {
-        parent::__construct('Call Giftery API error');
+        parent::__construct(sprintf('Giftery API Error: (%s) %s', $code, $message));
         $this->apiCode = $code;
         $this->apiMessage = $message;
         $this->response = $response;

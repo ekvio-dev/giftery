@@ -9,7 +9,15 @@ namespace Giftery;
 use Giftery\Request\Command;
 use Giftery\Request\HttpMethod;
 use Giftery\Request\Order;
+use Giftery\Request\ProductIds;
+use Giftery\Request\TaskId;
+use Giftery\Request\Zone;
+use Giftery\Response\GetAddressResponse;
 use Giftery\Response\GetBalanceResponse;
+use Giftery\Response\GetCategoriesResponse;
+use Giftery\Response\GetCertificateResponse;
+use Giftery\Response\GetCodeResponse;
+use Giftery\Response\GetLinksResponse;
 use Giftery\Response\GetTestResponse;
 use Giftery\Response\MakeOrderResponse;
 use Giftery\Response\GetProductsResponse;
@@ -76,10 +84,55 @@ class GifteryApi implements Giftery
         return new MakeOrderResponse($response);
     }
 
-    public function getStatus(int $id): GetStatusResponse
+    public function getStatus(TaskId $id): GetStatusResponse
     {
-        $response = $this->request(HttpMethod::GET, Command::GET_STATUS, $this->encoder->encode(['id' => $id]));
+        $response = $this->request(HttpMethod::GET, Command::GET_STATUS, $this->encoder->encode(['id' => $id->value()]));
         return new GetStatusResponse($response);
+    }
+
+    public function getCertificate(TaskId $id): GetCertificateResponse
+    {
+        $response = $this->request(HttpMethod::GET, Command::GET_CERTIFICATE, $this->encoder->encode(['queue_id' => $id->value()]));
+        return new GetCertificateResponse($response);
+    }
+
+    public function getCode(TaskId $id): GetCodeResponse
+    {
+        $response = $this->request(HttpMethod::GET, Command::GET_CODE, $this->encoder->encode(['queue_id' => $id->value()]));
+        return new GetCodeResponse($response);
+    }
+
+    public function getLinks(TaskId $id): GetLinksResponse
+    {
+        $response = $this->request(HttpMethod::GET, Command::GET_LINKS, $this->encoder->encode(['queue_id' => $id->value()]));
+        return new GetLinksResponse($response);
+    }
+
+    public function getCategories(): GetCategoriesResponse
+    {
+        $response = $this->request(HttpMethod::GET, Command::GET_CATEGORIES);
+        return new GetCategoriesResponse($response);
+    }
+
+    public function getAddress(ProductIds $ids, Zone $zone): GetAddressResponse
+    {
+        $data = [];
+        if ($ids->value()) {
+            $data['product_id'] = $ids->value();
+        }
+
+        if ($zone->area()) {
+            $data['area_name'] = $zone->area();
+        }
+
+        if ($zone->locality()) {
+            $data['locality_name'] = $zone->locality();
+        }
+
+        $body = count($data)>0 ? $this->encoder->encode($data) : '';
+
+        $response = $this->request(HttpMethod::GET, Command::GET_ADDRESS, $body);
+        return new GetAddressResponse($response);
     }
 
     public function test(): GetTestResponse
@@ -97,7 +150,7 @@ class GifteryApi implements Giftery
         $headers = $method->isPost() ? ['Content-Type' => 'application/x-www-form-urlencoded'] : [];
         $body = $method->isPost() ? $this->buildBody($command, $data) : '';
 
-        $response = $this->httpClient->request($method, $command, $uri, $headers, $body);
+        $response = $this->httpClient->request($method, $uri, $headers, $body);
         return $this->encoder->decode($response);
     }
 

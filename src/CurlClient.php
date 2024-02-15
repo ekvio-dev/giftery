@@ -8,23 +8,30 @@ namespace Giftery;
 
 use CurlHandle;
 use Giftery\Exception\HttpException;
-use Giftery\Request\Command;
 use Giftery\Request\HttpMethod;
 use InvalidArgumentException;
 
 class CurlClient implements HttpClient
 {
     private CurlHandle $curlHandle;
+    /**
+     * @var array<int,mixed>
+     */
+    private array $options;
 
-    public function __construct()
+    /**
+     * @param array<int,mixed> $options
+     */
+    public function __construct(array $options = [])
     {
         $ch = curl_init();
         if (!$ch instanceof CurlHandle) {
             throw new InvalidArgumentException('Cannot instantiate (curl_init()) curl handler');
         }
         $this->curlHandle = $ch;
+        $this->options = $options;
     }
-    public function request(HttpMethod $method, Command $command, string $uri, array $headers, string $body): string
+    public function request(HttpMethod $method, string $uri, array $headers, string $body): string
     {
         $headers = $this->prepareHeaders($headers);
 
@@ -41,6 +48,10 @@ class CurlClient implements HttpClient
             ];
         }
 
+        if ($this->options) {
+            $options += $this->options;
+        }
+
         curl_setopt_array($this->curlHandle, $options);
 
         $response = (string) curl_exec($this->curlHandle);
@@ -54,7 +65,12 @@ class CurlClient implements HttpClient
     {
         if (empty($response)) {
            $error = curl_error($this->curlHandle);
-           throw new HttpException(400, $error);
+
+           if ($error) {
+               throw new HttpException(400, $error);
+           } else {
+               throw new HttpException(500, 'Empty response');
+           }
         }
 
         $httpCode = curl_getinfo($this->curlHandle, CURLINFO_HTTP_CODE);

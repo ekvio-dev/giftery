@@ -19,14 +19,21 @@
   },
   "autoload": {
     "psr-4": {
-      "Giftery\\": "src/",
-      "Tests\\": "tests/"
+      "Giftery\\": "src/"
+    },
+    "files": ["functions.php"]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Giftery\\Tests\\": "tests/"
     }
   },
   "config": {
     "sort-packages": true
   },
   "require-dev": {
+    "giberti/phpunit-local-server": "^3.0",
+    "guzzlehttp/guzzle": "^7.8",
     "phpstan/phpstan": "^1.10",
     "phpunit/phpunit": "^9"
   },

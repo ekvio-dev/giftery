@@ -7,7 +7,6 @@ namespace Giftery;
 
 
 use Giftery\Exception\HttpException;
-use Giftery\Request\Command;
 use Giftery\Request\HttpMethod;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
@@ -25,7 +24,7 @@ class PsrHttpClient implements HttpClient
         $this->httpFactory = $httpFactory;
         $this->client = $client;
     }
-    public function request(HttpMethod $method, Command $command, string $uri, array $headers, string $body): string
+    public function request(HttpMethod $method, string $uri, array $headers, string $body): string
     {
         $request = $this->httpFactory->createRequest($method->value, $uri);
         $request = $this->addHeaders($request, $headers);
@@ -39,7 +38,13 @@ class PsrHttpClient implements HttpClient
         $response = $this->client->sendRequest($request);
         $this->guardResponse($response);
 
-        return (string) $response->getBody();
+        $body = (string) $response->getBody();
+
+        if (empty($body)) {
+            throw new HttpException(500, 'Empty response');
+        }
+
+        return $body;
     }
 
     private function guardResponse(ResponseInterface $response): void

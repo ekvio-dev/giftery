@@ -32,7 +32,7 @@ class ChangeApiException extends Exception
      */
     public function __construct(string $path, array $response)
     {
-        parent::__construct(sprintf('Change API exception for command %s', $path));
+        parent::__construct(sprintf('Change API exception for in path %s', $path));
         $this->path = $path;
         $this->response = $response;
     }
